@@ -26,20 +26,20 @@ install:          ## Install the project in dev mode.
 
 .PHONY: fmt
 fmt:              ## Format code using black & isort.
-	$(ENV_PREFIX)isort project_name/
-	$(ENV_PREFIX)black -l 79 project_name/
+	$(ENV_PREFIX)isort fuzzy_system/
+	$(ENV_PREFIX)black -l 79 fuzzy_system/
 	$(ENV_PREFIX)black -l 79 tests/
 
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
-	$(ENV_PREFIX)flake8 project_name/
-	$(ENV_PREFIX)black -l 79 --check project_name/
+	$(ENV_PREFIX)flake8 fuzzy_system/
+	$(ENV_PREFIX)black -l 79 --check fuzzy_system/
 	$(ENV_PREFIX)black -l 79 --check tests/
-	$(ENV_PREFIX)mypy --ignore-missing-imports project_name/
+	$(ENV_PREFIX)mypy --ignore-missing-imports fuzzy_system/
 
 .PHONY: test
 test: lint        ## Run tests and generate coverage report.
-	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=project_name -l --tb=short --maxfail=1 tests/
+	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=fuzzy_system -l --tb=short --maxfail=1 tests/
 	$(ENV_PREFIX)coverage xml
 	$(ENV_PREFIX)coverage html
 
@@ -80,9 +80,9 @@ release:          ## Create a new tag for release.
 	@read -p "Version? (provide the next x.y.z semver) : " TAG
 	@echo "creating git tag : $${TAG}"
 	@git tag $${TAG}
-	@echo "$${TAG}" > project_name/VERSION
+	@echo "$${TAG}" > fuzzy_system/VERSION
 	@$(ENV_PREFIX)gitchangelog > HISTORY.md
-	@git add project_name/VERSION HISTORY.md
+	@git add fuzzy_system/VERSION HISTORY.md
 	@git commit -m "release: version $${TAG} 🚀"
 	@git push -u origin HEAD --tags
 	@echo "Github Actions will detect the new tag and release the new version."
@@ -101,7 +101,7 @@ switch-to-poetry: ## Switch to poetry package manager.
 	@poetry init --no-interaction --name=a_flask_test --author=rochacbruno
 	@echo "" >> pyproject.toml
 	@echo "[tool.poetry.scripts]" >> pyproject.toml
-	@echo "project_name = 'project_name.__main__:main'" >> pyproject.toml 
+	@echo "fuzzy_system = 'fuzzy_system.__main__:main'" >> pyproject.toml 
 	@cat requirements.txt | while read in; do poetry add --no-interaction "$${in}"; done
 	@cat requirements-base.txt | while read in; do poetry add --no-interaction "$${in}" --dev; done
 	@cat requirements-test.txt | while read in; do poetry add --no-interaction "$${in}" --dev; done
@@ -110,7 +110,7 @@ switch-to-poetry: ## Switch to poetry package manager.
 	@mv requirements* .github/backup
 	@mv setup.py .github/backup
 	@echo "You have switched to https://python-poetry.org/ package manager."
-	@echo "Please run 'poetry shell' or 'poetry run project_name'"
+	@echo "Please run 'poetry shell' or 'poetry run fuzzy_system'"
 	
 	
 # This project has been generated from rochacbruno/flask-project-template
